@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { useAuth } from '../context/AuthContext';
+import React from 'react';
 import LoginScreen from '../screens/LoginScreen';
 import { useRouter } from 'expo-router';
 
-export default function Home() {
+export default function Login() {
   const router = useRouter();
   return <LoginScreen router={router}/>
 }

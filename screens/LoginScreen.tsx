@@ -13,7 +13,7 @@ export default function LoginScreen({router}: any) {
     try {
       const response = await signIn(email, password);
       console.log(router);
-      router.push('./user');
+      router.push('./private/home');
       // setUser(response); // Save the logged-in user
       Alert.alert("Success", "You are logged in!");
     } catch (error) {

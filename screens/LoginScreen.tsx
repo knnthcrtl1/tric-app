@@ -3,19 +3,19 @@ import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'expo-router';
 
-export default function LoginScreen({ navigation }: any) {
+export default function LoginScreen({router}: any) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { signIn } = useAuth();
   const [user, setUser] = useState<any>(null);
-  const router = useRouter();
 
   const handleLogin = async () => {
     try {
       const response = await signIn(email, password);
-      router.push('./UserHomeScreen');
-      setUser(response); // Save the logged-in user
-      // Alert.alert("Success", "You are logged in!");
+      console.log(router);
+      router.push('./user');
+      // setUser(response); // Save the logged-in user
+      Alert.alert("Success", "You are logged in!");
     } catch (error) {
       Alert.alert("Error", (error as any).message);
     }
@@ -40,7 +40,7 @@ export default function LoginScreen({ navigation }: any) {
       <Button title="Login" onPress={handleLogin} />
       <Button
         title="Register"
-        onPress={() => navigation.navigate('Register')}
+        onPress={() =>router.push('/user')}
       />
     </View>
   );

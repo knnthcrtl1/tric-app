@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'expo-router';
 
 export default function LoginScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { signIn } = useAuth();
+  const [user, setUser] = useState<any>(null);
+  const router = useRouter();
 
   const handleLogin = async () => {
     try {
-      await signIn(email, password);
-    } catch (error: any) {
-      Alert.alert('Error', error.message);
+      const response = await signIn(email, password);
+      router.push('./UserHomeScreen');
+      setUser(response); // Save the logged-in user
+      // Alert.alert("Success", "You are logged in!");
+    } catch (error) {
+      Alert.alert("Error", (error as any).message);
     }
   };
 

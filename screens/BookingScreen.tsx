@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Button, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { supabase } from '../../configs/supabaseConfig';
-import { useAuth } from '../../context/AuthContext';
+import { supabase } from '../configs/supabaseConfig';
+import { useAuth } from '../context/AuthContext';
 
 export default function BookingScreen({ route, navigation }: any) {
   const { location } = route.params;

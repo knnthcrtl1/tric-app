@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Button } from 'react-native';
-import { supabase } from '../../configs/supabaseConfig';
+import { supabase } from '../configs/supabaseConfig';
 // import MapView, { Marker } from 'react-native-maps';
 
 export default function AdminDashboardScreen() {

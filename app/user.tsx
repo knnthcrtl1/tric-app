@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import * as Location from 'expo-location';
 
-export default function UserHomeScreen({ navigation }: any) {
+export default function User({ navigation }: any) {
   const { user, signOut } = useAuth();
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
 
@@ -21,7 +21,7 @@ export default function UserHomeScreen({ navigation }: any) {
 
   const handleBookTric = () => {
     if (location) {
-      navigation.navigate('Booking', { location });
+    //   navigation.navigate('Booking', { location });
     }
   };
 

@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
-import { useAuth } from '../context/AuthContext';
-import * as Location from 'expo-location';
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Button } from "react-native";
+import { useAuth } from "../context/AuthContext";
+import * as Location from "expo-location";
 
 export default function UserHomeScreen({ router }: any) {
   const { user, signOut } = useAuth();
-  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [location, setLocation] = useState<Location.LocationObject | null>(
+    null
+  );
 
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
+      if (status !== "granted") {
         return;
       }
 
@@ -21,7 +23,7 @@ export default function UserHomeScreen({ router }: any) {
 
   const handleBookTric = () => {
     if (location) {
-      // navigation.navigate('Booking', { location });
+      router.navigate("book", { location });
     }
   };
 
@@ -37,12 +39,12 @@ export default function UserHomeScreen({ router }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 20,
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

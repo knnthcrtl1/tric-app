@@ -5,32 +5,24 @@ import { supabase } from "../configs/supabaseConfig";
 import { useAuth } from "../context/AuthContext";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 
+const DEFAULT_REGION = {
+  latitude: 37.7749, // San Francisco
+  longitude: -122.4194,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
+
 export default function BookingScreen() {
   const { latitude, longitude }: any = useLocalSearchParams();
 
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<any>({
-    latitude: 0,
-    longitude: 0,
+    latitude: Number(latitude),
+    longitude: Number(longitude),
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
   });
-
-  useEffect(() => {
-    setLoading(true);
-    if (latitude && longitude) {
-      setSelectedLocation({ ...selectedLocation, latitude, longitude });
-      setLoading(false);
-    }
-  }, [
-    selectedLocation.latitude,
-    selectedLocation.latitude,
-    latitude,
-    longitude,
-  ]);
-
-  console.log(selectedLocation);
 
   const handleBooking = async () => {
     const { error } = await supabase.from("bookings").insert({
@@ -46,29 +38,30 @@ export default function BookingScreen() {
     }
   };
 
-  if (!selectedLocation?.latitude) return null;
+  const { latitude: lat, longitude: long } = selectedLocation;
 
   return (
     <View style={styles.container}>
-      <View>
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: selectedLocation.latitude,
-            longitude: selectedLocation.longitude,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
+      <MapView
+        style={styles.map}
+        initialRegion={
+          latitude && longitude
+            ? {
+                latitude: lat, // San Francisco
+                longitude: long,
+                latitudeDelta: 0.005,
+                longitudeDelta: 0.005,
+              }
+            : DEFAULT_REGION
+        }
+      >
+        <Marker
+          coordinate={{
+            latitude: lat,
+            longitude: long,
           }}
-          onPress={(e) => setSelectedLocation(e.nativeEvent.coordinate)}
-        >
-          {/* <Marker
-            coordinate={{
-              latitude: 0 || latitude,
-              longitude: 0 || longitude,
-            }}
-          /> */}
-        </MapView>
-      </View>
+        />
+      </MapView>
       <Button title="Confirm Booking" onPress={handleBooking} />
     </View>
   );

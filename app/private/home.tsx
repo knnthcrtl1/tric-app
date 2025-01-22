@@ -27,8 +27,8 @@ export default function Home() {
     //    }
     //  };
 
-   const onSignout = () => {
-      const response = signOut();
+   const onSignout = async () => {
+      const response = await signOut();
       console.log('sign out => ', response);
       router.push('../')
    } 

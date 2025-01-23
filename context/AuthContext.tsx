@@ -1,6 +1,6 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { supabase } from '../configs/supabaseConfig';
-import { Session } from '@supabase/supabase-js';
+import React, { createContext, useState, useContext, useEffect } from "react";
+import { supabase } from "../configs/supabaseConfig";
+import { Session } from "@supabase/supabase-js";
 
 type AuthContextType = {
   session: Session | null;
@@ -33,20 +33,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkUserRole = async (userId: string | undefined) => {
     if (!userId) return;
-    
+
     const { data, error } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', userId)
+      .from("users")
+      .select("role")
+      .eq("id", userId)
       .single();
 
     if (data && !error) {
-      setIsAdmin(data.role === 'admin');
+      setIsAdmin(data.role === "admin");
     }
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error, data }  =  await supabase.auth.signInWithPassword({ email, password });
+    const { error, data } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
     if (error) throw error;
     return data;
   };
@@ -66,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

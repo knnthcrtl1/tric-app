@@ -48,7 +48,7 @@ export default function PrivateLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Explore",
+          title: "Settings",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="settings.fill" color={color} />
           ),

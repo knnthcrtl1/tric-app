@@ -1,8 +1,8 @@
 import React from "react";
-import BookingScreen from "@/screens/BookingScreen";
+import SettingsScreen from "@/screens/SettingsScreen";
 
 const Settings = () => {
-  return <BookingScreen />;
+  return <SettingsScreen />;
 };
 
 export default Settings;

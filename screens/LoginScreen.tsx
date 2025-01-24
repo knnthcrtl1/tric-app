@@ -2,17 +2,20 @@ import React, { useState } from "react";
 import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "expo-router";
+import { useDispatch } from "react-redux";
+import { setUserInfo } from "@/reducer/userSlice";
 
 export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState("vortexbears@gmail.com");
   const [password, setPassword] = useState("!Knnthcrtl123");
   const { signIn } = useAuth();
-  const [user, setUser] = useState<any>(null);
+  const dispatch = useDispatch();
 
   const handleLogin = async () => {
     try {
-      const response = await signIn(email, password);
+      const response: { user: { id: string } } = await signIn(email, password);
+      dispatch(setUserInfo(response?.user));
       router.push("/private/home");
       // setUser(response); // Save the logged-in user
       Alert.alert("Success", "You are logged in!");

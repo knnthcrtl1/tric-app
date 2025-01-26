@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useRouter } from "expo-router";
 import { useSelector } from "react-redux";
 import { RootState } from "@/reducer/store";
+import { supabase } from "@/configs/supabaseConfig";
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -11,25 +12,79 @@ export default function SettingsScreen() {
     (state: RootState) => state.userSlice.userAuthInfo
   );
 
-  console.log("user auth info =>", userAuthInfo);
+  const { email, id } = userAuthInfo || {};
 
   const [fullName, setFullname] = useState("tabons");
   const [phoneNum, setPhoneNum] = useState("09675682385");
   const [address, setAddress] = useState("Block 112 Lot 5");
 
-  const handleUserUpdate = async () => {
-    try {
-      //   const response: { user: { id: string } } = await signIn(email, password);
+  console.log(email, id);
 
-      //   console.log("response =>", response?.user?.email);
-      router.push("/private/home");
-      // setUser(response); // Save the logged-in user
-      Alert.alert("Success", "You are logged in!");
+  const useUpdateProfile = async () => {
+    await supabase.from("tbl_profile_status").upsert([
+      {
+        user_id: id,
+        status: "pending",
+      },
+    ]);
+  };
+  const handleSubmit = async () => {
+    try {
+      // Validate inputs1
+      if (!fullName || !phoneNum || !address) {
+        Alert.alert("Error", "Please fill in all fields");
+        return;
+      }
+
+      // Step 1: Check if email exists in the tbl_users table
+      const { error: emailCheckError, data: checkUserData } = await supabase
+        .from("tbl_users")
+        .select("email")
+        .eq("email", email)
+        .single();
+
+      if (checkUserData?.email) {
+        await supabase.from("tbl_users").update({
+          user_id: id,
+          full_name: fullName,
+          email: email,
+          phone_number: phoneNum,
+        });
+
+        useUpdateProfile();
+
+        Alert.alert("Success", "Updated Successfully!", [{ text: "OK" }]);
+        return;
+      }
+
+      const { error: userError } = await supabase.from("tbl_users").upsert({
+        user_id: id,
+        full_name: fullName,
+        email: email,
+        phone_number: phoneNum,
+      });
+
+      if (userError) {
+        alert("Failed to update profile: " + userError.message);
+        return;
+      }
+
+      await supabase.from("tbl_users").upsert([
+        {
+          user_id: id,
+          full_name: fullName,
+          user_type: "passenger",
+          email: email,
+        },
+      ]);
+
+      useUpdateProfile();
+
+      Alert.alert("Success", "Updated Successfully!", [{ text: "OK" }]);
     } catch (error) {
-      Alert.alert("Error", (error as any).message);
+      Alert.alert("Error", error?.message);
     }
   };
-
   return (
     <View style={styles.container}>
       <TextInput
@@ -53,8 +108,7 @@ export default function SettingsScreen() {
         onChangeText={setAddress}
         autoCapitalize="none"
       />
-      {/* <Button title="Login" onPress={handleLogin} /> */}
-      {/* <Button title="Register" onPress={() => router.push("/register")} /> */}
+      <Button title="Submit" onPress={handleSubmit} />
     </View>
   );
 }

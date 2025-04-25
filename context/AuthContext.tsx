@@ -5,7 +5,10 @@ import { Session } from "@supabase/supabase-js";
 type AuthContextType = {
   session: Session | null;
   user: any;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (
+    email: string,
+    password: string
+  ) => Promise<{ user: any; session: Session | null; weakPassword?: any }>;
   signOut: () => Promise<void>;
   isAdmin: boolean;
 };

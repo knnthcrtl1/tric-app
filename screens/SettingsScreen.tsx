@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
-import { useAuth } from "../context/AuthContext";
-import { useRouter } from "expo-router";
 import { useSelector } from "react-redux";
 import { RootState } from "@/reducer/store";
 import { supabase } from "@/configs/supabaseConfig";
 
 export default function SettingsScreen() {
-  const router = useRouter();
   const userAuthInfo = useSelector(
     (state: RootState) => state.userSlice.userAuthInfo
   );
@@ -18,9 +15,7 @@ export default function SettingsScreen() {
   const [phoneNum, setPhoneNum] = useState("09675682385");
   const [address, setAddress] = useState("Block 112 Lot 5");
 
-  console.log(email, id);
-
-  const useUpdateProfile = async () => {
+  const updateProfile = async () => {
     await supabase.from("tbl_profile_status").upsert([
       {
         user_id: id,
@@ -28,6 +23,7 @@ export default function SettingsScreen() {
       },
     ]);
   };
+
   const handleSubmit = async () => {
     try {
       // Validate inputs1
@@ -37,7 +33,7 @@ export default function SettingsScreen() {
       }
 
       // Step 1: Check if email exists in the tbl_users table
-      const { error: emailCheckError, data: checkUserData } = await supabase
+      const { data: checkUserData } = await supabase
         .from("tbl_users")
         .select("email")
         .eq("email", email)
@@ -51,7 +47,7 @@ export default function SettingsScreen() {
           phone_number: phoneNum,
         });
 
-        useUpdateProfile();
+        updateProfile();
 
         Alert.alert("Success", "Updated Successfully!", [{ text: "OK" }]);
         return;
@@ -78,10 +74,10 @@ export default function SettingsScreen() {
         },
       ]);
 
-      useUpdateProfile();
+      updateProfile();
 
       Alert.alert("Success", "Updated Successfully!", [{ text: "OK" }]);
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert("Error", error?.message);
     }
   };
